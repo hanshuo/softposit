@@ -1,0 +1,5 @@
+Make sure to run the following to set the path for MKL shared libraries:
+
+export LD_LIBRARY_PATH=<mkl directory>/lib/32
+
+In demo_c, every input and output array uses column-major order.

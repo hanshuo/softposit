@@ -1,5 +1,15 @@
-Make sure to run the following to set the path for MKL shared libraries:
+====== Installation ======
+See the author's website for detail:
+  
+  http://purl.org/hanshuo/softposit
 
-export LD_LIBRARY_PATH=<mkl directory>/lib/32
 
-In demo_c, every input and output array uses column-major order.
+====== Compile/run the Demo ======
+
+Make sure to run the following to set the path for MKL shared
+libraries. Replace the string in MKL_DIR with the location where the Intel
+MKL is installed.
+
+  export MKL_DIR=/opt/intel/mkl/10.1.1.019
+  export LD_LIBRARY_PATH=$MKL_DIR/lib/32:$LD_LIBRARY_PATH
+

@@ -1,3 +1,6 @@
-makefile_old: from original IMKL 
-makefile: modified to compile under gfortran
+In each folder:
+
+  - makefile.old: makefile from the original IMKL 
+  - makefile: modified to compile with gfortran
+
 

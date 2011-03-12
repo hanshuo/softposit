@@ -1,4 +1,4 @@
-MKL_DIR = /opt/intel/mkl/10.1.1.019
+#MKL_DIR = /opt/intel/mkl/10.1.1.019
 
 default: demo demo_static
 

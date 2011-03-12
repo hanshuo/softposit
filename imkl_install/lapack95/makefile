@@ -1,0 +1,136 @@
+#******************************************************************************
+#                              INTEL CONFIDENTIAL
+#  Copyright(C) 2005-2008 Intel Corporation. All Rights Reserved.
+#  The source code contained  or  described herein and all documents related to
+#  the source code ("Material") are owned by Intel Corporation or its suppliers
+#  or licensors.  Title to the  Material remains with  Intel Corporation or its
+#  suppliers and licensors. The Material contains trade secrets and proprietary
+#  and  confidential  information of  Intel or its suppliers and licensors. The
+#  Material  is  protected  by  worldwide  copyright  and trade secret laws and
+#  treaty  provisions. No part of the Material may be used, copied, reproduced,
+#  modified, published, uploaded, posted, transmitted, distributed or disclosed
+#  in any way without Intel's prior express written permission.
+#  No license  under any  patent, copyright, trade secret or other intellectual
+#  property right is granted to or conferred upon you by disclosure or delivery
+#  of the Materials,  either expressly, by implication, inducement, estoppel or
+#  otherwise.  Any  license  under  such  intellectual property  rights must be
+#  express and approved by Intel in writing.
+#
+#******************************************************************************
+#  Content:
+#      Intel(R) Math Kernel Library LAPACK95 library creation
+#******************************************************************************
+
+help:
+	@echo "Usage: make {lib32|libem64t|lib64} [interface=interface_name]"
+	@echo
+	@echo "Intel(R) Fortran Compiler as default"
+	@echo
+	@echo "interface_name    - can be lp64 or ilp64 for em64t and ia64. Default value is lp64."
+
+##------------------------------------------------------------------------------
+## examples of using:
+##
+## make PLAT=lnx32 lib     - build  by Intel(R) Fortran Compiler  (as default)
+##                          for 32-bit applications, static linking
+##
+## make PLAT=lnx64 lib     - build  by Intel(R) Fortran Compiler  (as default)
+##                          for 64-bit applications - Intel(R) Itanium(R), static linking
+##
+## make PLAT=lnx32e lib     - build  by Intel(R) Fortran Compiler  (as default)
+##                          for 32-bit with Intel(R) EM64T applications - static linking
+##------------------------------------------------------------------------------
+
+include lapack95.lst
+
+    FC = gfortran
+
+opts0    =
+optsc    = -c $(opts0)
+sufobj   = o
+suflib   = a
+sufmod   = mod
+src_path = source
+LIBR     = ar -rs
+
+ifndef INSTALL_DIR
+INSTALL_DIR = /opt/intel/mkl/10.1.1.019/lib/$(IA)
+obj_path = obj
+else
+obj_path = $(INSTALL_DIR)/obj
+endif
+
+mkl_lapack95_lib    = libmkl_lapack95.$(suflib)
+mkl95_lapack_mod    = mkl95_lapack.$(sufmod)
+mkl95_precision_mod = mkl95_precision.$(sufmod)
+
+check:
+ifndef PLAT
+	$(error Undefined platform: PLAT=$(PLAT). Set one of: lnx32 lnx64 lnx32e)
+endif
+
+ifeq ($(PLAT),lnx32)
+    IA = 32
+else
+    ifeq ($(PLAT),lnx32e)
+        IA = em64t
+    else
+        ifeq ($(PLAT),lnx64)
+            IA = 64
+        else
+	$(error Unknown platform: PLAT=$(PLAT). Set one of: lnx32 lnx64 lnx32e)
+        endif
+    endif
+endif
+
+COPTS =
+FOPTS =
+
+ifeq ($(PLAT),lnx32)
+override interface= #
+endif
+
+ifeq ($(interface),ilp64)
+COPTS = -DMKL_ILP64
+FOPTS = -i8
+endif
+
+objs    = $(src_lapack95:.f90=.$(sufobj))
+objects = $(addprefix $(obj_path)/,$(objs))
+
+vpath %.f90       $(src_path)
+vpath %.$(sufobj) $(obj_path)
+
+$(obj_path)/%.$(sufobj): %.f90
+	$(FC) $(SPEC_OPT) $(FOPTS) $(optsc) -o $(obj_path)/$(@F) $<
+
+$(mkl95_lapack_mod): ../../include/mkl_lapack.f90
+	$(FC) $(SPEC_OPT) $(FOPTS) $(optsc) -o $(obj_path)/mkl_lapack.$(sufobj) $<
+
+.PHONY: lib clean check
+
+lib32:
+	make PLAT=lnx32 clean lib
+libem64t:
+	make PLAT=lnx32e clean lib interface=$(interface)
+lib64:
+	make PLAT=lnx64 clean lib interface=$(interface)
+
+lib:	check $(mkl_lapack95_lib) $(mkl95_lapack_mod) clean_obj
+
+$(mkl_lapack95_lib):
+	mkdir -p $(obj_path)
+	make -f makefile objects
+	$(LIBR) $(INSTALL_DIR)/$(mkl_lapack95_lib) $(obj_path)/[sdcz]*.$(sufobj)
+
+objects:$(objects)
+
+clean:	check
+	-rm -rf $(obj_path)
+	-rm -f $(INSTALL_DIR)/$(mkl_lapack95_lib)
+	-rm -f $(INSTALL_DIR)/$(mkl95_lapack95_mod)
+	-rm -f $(INSTALL_DIR)/$(mkl95_precision_mod)
+	-rm -f $(INSTALL_DIR)/mkl77_blas.mod
+
+clean_obj:check
+	-rm -rf $(obj_path)

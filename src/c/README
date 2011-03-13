@@ -1,7 +1,0 @@
-demo: SoftPOSIT demo in C, gives the same result as MATLAB (demo.m)
-
-demo_static: SoftPOSIT demo in C (with static library)
-
-demo.m: SoftPOSIT demo in MATLAB
-
-SoftPOSIT.m: SoftPOSIT algorithm in MATLAB, modified from: http://www.cfar.umd.edu/~daniel/SoftPOSIT.txt

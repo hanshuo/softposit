@@ -1,0 +1,22 @@
+The folder includes the following source code files:
+
+  - demo.c: SoftPOSIT demo in C
+  - demo.cc: SoftPOSIT demo in C++
+  - demo.f95: SoftPOSIT demo in Fortran 95
+  - demo.m: SoftPOSIT demo in MATLAB
+  - SoftPOSIT.m: SoftPOSIT algorithm in MATLAB, modified from: http://www.cfar.umd.edu/~daniel/SoftPOSIT.txt
+
+It also includes the C/Fortran SoftPOSIT header and source files:
+
+  - softposit.h
+  - softposit.f95
+
+To compile all the binaries, run "make all":
+
+  - demo_c: SoftPOSIT demo in C
+  - demo_cstatic: SoftPOSIT demo in C (statically linked)
+  - demo_cpp: SoftPOSIT demo in C++
+  - demo_cppstatic: SoftPOSIT demo in C++ (statically linked)
+  - demo_f95: SoftPOSIT demo in Fortran 95
+  - demo_1k_f95: same as demo_f95, but loops for 1000 time for benchmarking
+
